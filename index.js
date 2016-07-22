@@ -3,18 +3,18 @@
 * @Date:   2016-07-22T13:50:42+08:00
 * @Email:  zyy7259@gmail.com
 * @Last modified by:   zyy
-* @Last modified time: 2016-07-22T15:30:03+08:00
+* @Last modified time: 2016-07-22T15:37:59+08:00
 */
 
 var argv = require('yargs')
   .usage('Usage: $0 [options]')
   .config()
+  .option('context', {
+    describe: 'The base directory for resolving the `pattern` (absolute or relative; if relative, relative to process.cwd())'
+  })
   .option('pattern', {
     describe: 'minimatch pattern',
     required: true
-  })
-  .option('context', {
-    describe: 'The base directory for resolving the `pattern` (absolute or relative; if relative, relative to process.cwd())'
   })
   .check(function (parsedArgv, aliasMap) {
     if (!parsedArgv.pattern) {
@@ -26,13 +26,15 @@ var argv = require('yargs')
   .example('$0 --pattern *', 'command line arguments')
   .argv
 
-console.log(argv)
+// console.log(argv)
 
+// normalize pattern to array
 var pattern = argv.pattern
 if (!Array.isArray(pattern)) {
   pattern = [pattern]
 }
 
+// join context and pattern
 var path = require('path')
 var context = argv.context
 if (context) {
@@ -52,12 +54,12 @@ if (context) {
   })
 }
 
-console.log(pattern)
+// console.log(pattern)
 
 var globby = require('globby')
 var scan = require('./scan')
 globby(pattern).then(function (paths) {
-  console.log(paths)
+  // console.log(paths)
   scan(paths).then(function (map) {
     console.log(map)
   })
