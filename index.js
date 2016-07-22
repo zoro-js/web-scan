@@ -3,7 +3,7 @@
 * @Date:   2016-07-22T13:50:42+08:00
 * @Email:  zyy7259@gmail.com
 * @Last modified by:   zyy
-* @Last modified time: 2016-07-22T17:49:13+08:00
+* @Last modified time: 2016-07-22T19:44:54+08:00
 */
 
 var argv = require('yargs')
@@ -58,10 +58,20 @@ if (context) {
 
 var globby = require('globby')
 var Scanner = require('./src/scanner')
+var parser = require('./src/parser')
+var reverser = require('./src/reverser')
 globby(pattern).then(function (paths) {
   // console.log(paths)
-  var scanner = new Scanner(paths, argv)
-  scanner.then(function (map) {
-    // console.log(map)
+  var scanner = new Scanner({
+    paths: paths,
+    config: argv,
+    parser: parser
+  })
+  scanner.on('end', function (depMap) {
+    var affectMap = reverser(depMap)
+    console.log('resulting affectMap')
+    console.log(affectMap)
+  }).on('error', function (error) {
+
   })
 })

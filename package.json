@@ -19,6 +19,7 @@
   "dependencies": {
     "fs-extra-promise": "^0.4.0",
     "globby": "^5.0.0",
+    "wolfy87-eventemitter": "^5.1.0",
     "yargs": "^4.8.1"
   }
 }

@@ -3,10 +3,10 @@
 * @Date:   2016-07-22T15:18:59+08:00
 * @Email:  zyy7259@gmail.com
 * @Last modified by:   zyy
-* @Last modified time: 2016-07-22T17:50:30+08:00
+* @Last modified time: 2016-07-22T19:45:07+08:00
 */
 
-var fs = require('fs-extra-promise')
+var EventEmitter = require('wolfy87-eventemitter')
 var util = require('util')
 
 // 最大并发数
@@ -22,15 +22,20 @@ var Default_Thread_Num = 5
  * @param {Object} config 配置
  * @return {Promise}
  */
-function Scanner (paths, config) {
+function Scanner (options) {
+  var self = this
+
+  var paths = options.paths
+  var config = options.config
   console.log('there are %d paths', paths.length)
   console.log(paths)
 
-  this.paths = paths
-  this.config = config
+  self.paths = paths
+  self.config = config
+  self.parser = options.parser
 
   // 依赖 map
-  this.deps = {}
+  self.depMap = {}
 
   // 解析并发数
   var threadNum = Default_Thread_Num
@@ -53,37 +58,32 @@ function Scanner (paths, config) {
       numToCut = numPerThread + 1
     }
     console.log('cutting %d', numToCut)
-    promiseArray.push(this.scanThread(paths.splice(0, numToCut)))
+    promiseArray.push(self.scanThread(paths.splice(0, numToCut)))
     counter++
   }
-  return Promise.all(promiseArray).then(function () {
-    return reverseDeps(deps)
+  Promise.all(promiseArray).then(function () {
+    self.emit('end', self.depMap)
+    return self.depMap
+  }, function (error) {
+    self.emit('error', error)
   })
 }
 
-var pro = Scanner.prototype
+var pro = Scanner.prototype = Object.create(EventEmitter.prototype)
+
+console.log(pro.getListeners)
 
 pro.scanThread = function (paths) {
   console.log('scaning')
   console.log(paths)
   var self = this
   return paths.reduce(function (seq, path) {
-    return seq.then(function () {
-      return fs.readFileAsync(path, 'utf8')
-    }).then(function (cnt) {
-      self.parseDeps(path, cnt)
+    return seq
+    .then(self.parser.bind(null, path))
+    .then(function (depMap) {
+      self.depMap[path] = depMap
     })
   }, Promise.resolve())
-}
-
-pro.parseDeps = function (path, cnt) {
-  console.log('parsing %s', path)
-  // 解析 cnt 里面所有的引用，赋给 deps[path]
-  this.deps[path] = []
-}
-
-function reverseDeps () {
-  return deps
 }
 
 module.exports = Scanner
