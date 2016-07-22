@@ -1,0 +1,23 @@
+{
+  "name": "web-scan",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zyy7259/web-scan.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/zyy7259/web-scan/issues"
+  },
+  "homepage": "https://github.com/zyy7259/web-scan#readme",
+  "dependencies": {
+    "globby": "^5.0.0",
+    "yargs": "^4.8.1"
+  }
+}
