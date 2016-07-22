@@ -1,5 +1,7 @@
 {
+  "context": "../web-starter-kit",
   "pattern": [
-    "*"
+    "**/*.*",
+    "!node_modules/**/*"
   ]
 }
