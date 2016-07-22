@@ -3,7 +3,7 @@
 * @Date:   2016-07-22T13:50:42+08:00
 * @Email:  zyy7259@gmail.com
 * @Last modified by:   zyy
-* @Last modified time: 2016-07-22T15:45:44+08:00
+* @Last modified time: 2016-07-22T16:00:39+08:00
 */
 
 var argv = require('yargs')
@@ -60,7 +60,7 @@ var globby = require('globby')
 var scan = require('./src/scan')
 globby(pattern).then(function (paths) {
   // console.log(paths)
-  scan(paths).then(function (map) {
+  scan(paths, argv).then(function (map) {
     console.log(map)
   })
 })
