@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/zyy7259/web-scan#readme",
   "dependencies": {
+    "fs-extra-promise": "^0.4.0",
     "globby": "^5.0.0",
     "yargs": "^4.8.1"
   }
